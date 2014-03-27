@@ -1,0 +1,14 @@
+<a1.js 1>
+Javascript Montreal Presentation
+
+Hi there, my name is Ben and I am an engineer with Plotly. Also with me from Plotly are Chris and Alex, they will be helping out with the demonstrations. To get warmed up we are going to start with a demo of hardware and sensors streaming real-time data to Plotly. If the Wifi gods are smiling upon us today we should all be able to view the data these sensors are streaming. Once Chris and Alex give me the thumbs up I'll put up a link so you can follow along. < start demo > We have two Raspberry Pi's each with two sensors. I think one of them has ____ and ____ and the other also has a _______ as well as a ________. These Pi's are running some node code that takes the sensor readings and streams them over a continuous http connection to Plotly's servers. You can stream any number of streams into one Plotly plot and in this case we have two data-streams, one for each Rasbperry Pi, each sensor on the Pi is expressed as a seperate function of the datastream. So I think the knob controls frequency while the other sensor controls amplitude. Since this is all real-time we can do cool things like load the stream into the Plotly Webapp, and then restyle it. So lets make this _____ and _______. Once I save, that change should propogate out to all the connected clients, even if this plot is embedded in a webpage or an ipython notebook.
+
+
+Okay cool - the Wifi gods were smiling.
+
+<a1.js 2>
+More than 1.4 million Arduinos and Arduino clones as well as more than 2.3 million Raspberry Pi's have found their way into peoples hands. Now, I read enough Hacker News to know there are plenty of folks who don't see Javascript as the new C but I have this theory. You see, Javascript, for years laughed at and dismissed as a mutant, relegated and growing up in the hostile prison island shitstorm that is the Browser, has been unleashed. And guess what? Those years of surviving the keyboard mashing of a three year old with it's arms tied around it's back? It's now kicking ass in hardware. So, Nodejs, as a sort of asyncronous networking swiss army machine gun is amazingly well suited to this world of interconnected small-form hardware.
+
+For the next few minutes we'll take a look at how nodejs makes realtime streaming simple, take a look at some of the async primitives and have some fun with Node streams. If I have time at the end we talk about the infrastructure built around streaming at Plotly.
+
+<a2.js 1>
