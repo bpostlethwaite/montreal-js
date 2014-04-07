@@ -12,6 +12,8 @@
     "split": "^0.3.0",
     "through2": "^0.4.1",
     "request": "^2.34.0",
-    "trumpet": "^1.6.3"
+    "trumpet": "^1.6.3",
+    "plotly": "^0.2.4",
+    "duplexer": "^0.1.1"
   }
 }
