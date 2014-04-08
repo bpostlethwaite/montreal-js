@@ -1,73 +1,34 @@
-<a1.js 1>
 Javascript Montreal Presentation
 
-Hi there, my name is Ben and I am an engineer with Plotly. Also with me from Plotly are Chris Parmer and Alex Vados, they will be helping out with the demonstrations we have planned, and we do have some really cool demos for you to watch and also for you to participate in. We have a few gizmos hooked up to our streaming API that we can pass around and there should be time at the end to help anyone who wants to, to get visualizing some realtime data streams. At the back creeping around with the camera is Matte Vonnee, that's right, you are all going to be filmed, but don't worry, Matt is an excellent videographer, he'll make you all look fantastic. Once the video is edited and ready to go we'll make sure a copy gets put on the js-montreal website so everyone will have access.
+Hi there, my name is Ben and I am an engineer with Plotly. Also with me from Plotly are Chris Parmer and Alex Vados, they will be helping out with the demonstrations we have planned, and we do have some really cool demos for you to watch and also for you to participate in. We have a few gizmos hooked up to our streaming API that we can pass around and there should be time at the end to help anyone who wants to, to get visualizing some realtime data streams.
 
-As many of you are probably aware this is a special week for programmers in Montreal, as we are lucky to be hosting PyCon 2014. Because of this, we have some Plotly teammates out that can normally be found in Boston or SanFransisco. So Matt and Alex, can you guys give a little wave? And also, our CEO Jack Parmer, say hi. If anyone has questions about running a tech startup in Montreal or questions about Plotly, you should talk to one of the guys at the end of the talk. First, I should explain what we do at Plotly. At Plotly we care deeply about data and making it easy and fun to transform your data into information through professional quality visualization, analysis and collaboration. We have a REST API and support for many different platforms and languages as well as an webapp which lets people upload and explore and share their data through an increasingly usable UI.
+At the back creeping around with the camera is Matte Vonnee, that's right, you are all going to be filmed, but don't worry, Matt is an excellent videographer, he'll make you all look fantastic. Once the video is edited and ready to go we'll make sure a copy gets put on the js-montreal website so everyone will have access.
 
-Who knows what this is? Right, histogram, bar chart. This is a common way to display a wide range of data types. But have you ever been staring at one of these things and just wished it would do something like this? <show cray cray histograms> Right? So I like to think of this representation of realtime data as the first-person-shooter. Right, we are dragging a time slice through time and looking at it face on and are able to see the values change with time, but only at for a discrete point in time. So how about this thing, what would we call this kind of data? Sure, Bitcoin prices. It's timeseries data. But timeseries data is just another way of saying historic real-time right? At one point in time this was happening, like right then. What if it was super easy to pipe a big file of financial data and animate it in realtime online? Well that would be cool. I like to call this type of realtime data the side scroller. You flatten the spatial dimension and layout time like a film reel.
+As many of you are probably aware this is a special week for programmers in Montreal, as we are lucky to be hosting PyCon 2014. Because of this, we have some Plotly teammates out that can normally be found in Boston or SanFransisco. So Matt and Alex, can you guys give a little wave? And also, our CEO Jack Parmer, say hi. If anyone has questions about Plotly or want to talk about the tech startup scene in Montreal Jack is both an engineer and chief strategist, so definitely take the opportunity to hit him up.
+
+A little bit about our company Plotly. At Plotly we care deeply about data and making it easy and fun to transform your data into information through professional quality visualization, analysis and collaboration. We have a REST API and support for many different platforms and languages as well as an webapp which lets people upload and explore and share their data online.
+
+Who knows what this is? Right, histogram, bar chart. This is a common way to display a wide range of data types. But have you ever wanted the bar graph to be plugged into the underlying data, when the data changes it changes? Have you ever wanted it to not a historic snapshot that is old by the time you finish making, but something alive. <show it> Right?
+
+So how about this thing, what would we call this kind of data? Sure, Bitcoin prices. It's timeseries data, timeseries data is used everywhere, engineering, financial and of course sensors and hardware, among many others. But timeseries data is just another way of saying historic real-time data? And at one point this data was alive. <show realtime timeseries> What if it was super easy to pipe a big file of financial data and animate it in realtime online or more importantly, plug into, and visualize a real-time data source? Well that would be cool.
+
+I have shown you two examples of realtime data, the histogram and the timeseries. In the case of the histogram we had what I think of as a spatial dimension on the xaxis. What we see at each point in time is the relation between the points spatial position and it's value. When we add motion to the visualization we are watching how that relation evolves in time. Whereas the timeseries data has time on the x-axis and all the representations of data points are actually the same spatial point, just drawn for different instances in time, like a film reel. So in the timeseries data, we don't see how a point's spatial position evolves in time but rather we can see many snapshots of the same point at different points in time. You can perform both of these types of realtime data visualizations with Plotlys streaming API.
 
 
-Streaming is basically an extension of our REST API, as it requires a REST call to setup the baseplot, style and layout. So you make two seperate calls to two different Plotly services, one to our REST backend to setup the plot, then another to a streaming endpoint to start dumping data into it. This dual service approach nicely keeps the services distinct, allowing more flexibility for the user, but its really just a reflection of the underlying technology. You see, Plotly is built on a Django Backend, which is excellent, it handles REST amazingly well and can be a reasonably secure system. But I needed realtime streaming and lets face it, Python is many things but async-realtime it is not. Anyway, there is this crazy thing out there, Node, an asyncronous swiss-army networking machine gun. Node doesn't just fit my usecase, it is the Raison d'être of Nodes existence, it's what nodejs gets up at 5am and trains for. So yeh, new Nodejs infrastructure and a new API.
+Streaming is basically an extension of our REST API. You are still required to first make a regular plot call to setup the base plot, it's style and layout. Once that is configured and your receive a response you can start streaming to our streaming endpoint, and that will populate the basegraph with data in realtime. So you make two seperate calls to two different Plotly services, one to our REST backend to setup the plot, then another to a streaming endpoint to start dumping data into it.
 
-The plan for the next few minutes is to do a bit of deep dive into nodejs streams, kick the tires, and look under the hood. Then we can talk about how Plotly is using streams in production and open up the floor for questions.
+This dual service approach nicely keeps the services independent, allowing more flexibility for the user, but its really just a reflection of the underlying technology. You see, Plotly is built on a Django Backend, which is excellent, it handles REST amazingly well and can be a reasonably secure system. But I needed realtime streaming and lets face it, Python is many things but async-realtime it is not. Anyway, there is this crazy thing out there, Node, an asyncronous swiss-army networking machine gun. Node doesn't just fit my usecase, it is the Raison d'être of Node, it's what nodejs gets up at 5am and trains for. So we have a new Streaming API at Plotly and the streaming backend is 100% javascript. And as an aside, nodejs made it a lot of fun to build.
 
-Before we begin that we have a streaming appertizer to work up everyones appetite...  If the wifi Gods are willing. Chris, Alex you guys ready? Cool, everybody who has a laptop or mobile that supports websockets check out this URL.
+The plan for the next few minutes is talk a little about nodejs streams and why they are awesome. Then we can talk about how Plotly is using streams in production and open up the floor for questions.
+
+Before we begin that we have a cool streaming demonstration. --- if the wifi Gods are willing. Chris, Alex you guys ready? Cool, everybody who has a laptop or mobile that supports websockets check out this URL.
  < start demo >
-So what we are passing around are Arduino's hooked up over serial to a Raspberry Pi. Each Arduino has two sensors.  A Potentiometer and a light sensor. These little beasts are running some node code that takes the sensor readings and streams them over a continuous http connection to Plotly's servers. We have two data-streams flowing right now, one from each Arduino Pi pairing, and they are streaming into the same plot. I think the knob controls frequency while the light sensor controls amplitude.
-
-Basically you have a forumulation that looks like this:
-A*sin(B*Δt)
-B = Hz * 2Π
+So what we are passing around are Arduino's hooked up over USB to a Raspberry Pi. Each Arduino has two sensors.  A Potentiometer and a light sensor. The RasPi's are running some node code that takes the sensor readings and streams them over a continuous http connection to Plotly's servers. We have two data-streams flowing right now, one from each Arduino Pi pairing, and they are streaming into the same plot. I think the knob controls frequency while the light sensor controls amplitude.
 
 <give audience some time to play with the Pis>
 
 Since this is all real-timey we can do cool things like load the stream into the Plotly Webapp, and then restyle it. So lets make this sine-wave A little more transparent. ... lets make it an area plot, but the difference. I save, that change should propagate out to all the connected clients, even if this plot is embedded in a webpage or an ipython notebook. Did that work? Nice. <end demo>
 
-Okay great, so I hope that gave you an idea of where we want to take this service. We are really enthusiastic about the potential of this service. Our goal at Plotly is to make streaming simple. for the next few minutes we are going to take tour into the world of streams, and specifically nodejs streams. How many of you have used Nodejs? How many of you have used Nodejs streams?
+Okay great, so I hope that gave you an idea of where we are taking this service. We are really enthusiastic about the potential of this service. My goal for this API is to make streaming data visualzation simple. for the next few minutes we are going to take tour into the world of streams, and specifically nodejs streams. How many of you have used Nodejs? How many of you have used Nodejs streams?
 
-What is a stream?
-In general a stream is a sequence of data elements made available over time. A stream can be thought of as a conveyor belt that allows items to be processed one at a time rather than in large batches. In Unix like systems (linux / Macs) streams are an abstraction used when reading or writing files, or communicating over network sockets. They can be composed into pipelines.
-So what does this have to do with Javascript? Well, Nodejs has from its beginning been inspired by the Unix philosophy nicely distilled into these points:
-- Write programs that do one thing and do it well.
-- Write programs to work together.
-- Write programs to handle text streams, because that is a universal interface.
---- (Doug McIlroy)
-
-Streams are a fundemental node I/O primitive and are used all throughout its core. We are going to start where life itself started, on the command line.
-
-<throughput + silly transform>
---- what is going on here?
-
-Well, under the hood Unix pipes are buffered input and output streams with the added bonus that Unix, God's operating system, implements backpressure along the pipeline. So if process A is producing data at 5000 bytes per second and process B is consuming at only 1000 byes per second, process A will fill up a buffer that process B reads from at a slower rate. Once the buffer fills up the kernel will suspend the over-eager producer while the slower process consumes data off the queue. Node streams also provide internal backpressure for free. Lets take a look at some backpressure at work
-
-Why use streams?
-Since streams are composable you can manage complexity by writing many simple pieces and composing them together like plumbing pipes. Lets take a look at this file, its some bitcoin data I downloaded from bitcoin charts. Lets visualize it as a scrolling timeseries with the minimum amount of code and effort possible.
-
-slowcat bitcoin.chart | jawk | node
-
-
-example 2: Ok, what if our data isn't in an file, what if it is provided by another service:
-Dualing bitcoin charts.
-
-
-example 3: Smooth streams
-wrap a fake sensor
-create mean-stream
-pipe to plotly
-
-
-When to use Streams?
-- When data is immediately actionable.
-- When you want to transform data.
-- When your data is  ....
-
-How Plotly uses Streams.
-General setup of the Streaming cluster?
-
-
------- junk bin --------
-
-More than 1.4 million Arduinos and Arduino clones as well as more than 2.3 million Raspberry Pi's have found their way into peoples hands. Which is truly fantastic but sort tiddly winks next to the 1.5 billion sensor laden smartphones out there. Now, I read enough Hacker News to know there are plenty of folks who don't see Javascript as the new C but I have this theory, though I might get interweb hate mail for saying it on camera. You see, Javascript, for years laughed at and dismissed as a mutant, relegated and growing up in the hostile prison island shitstorm that is the Browser, has been unleashed. And guess what? All those years surviving the keyboard mashing of three year olds with it's arms tied around it's back? Well it's now kicking ass in hardware. We have the beaglebone and Tessel prominently featuring Node as well johnny five keeping it alive on the Arduino. Nodejs, a sort of asyncronous networking swiss army machine gun is amazingly well suited to this world of networked small-form hardware.
-
-For the next few minutes we'll take a look at how nodejs makes realtime streaming simple, take a look at some of the async primitives and have some fun with Node streams. If I have time at the end we talk about the infrastructure built around streaming at Plotly.
+<start slide a1>

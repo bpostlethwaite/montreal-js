@@ -14,6 +14,11 @@
     "request": "^2.34.0",
     "trumpet": "^1.6.3",
     "plotly": "^0.2.4",
-    "duplexer": "^0.1.1"
+    "duplexer": "^0.1.1",
+    "duplexer2": "0.0.1",
+    "emit-stream": "^0.1.2",
+    "websocket-stream": "^0.5.1",
+    "ws": "^0.4.31",
+    "mux-demux": "^3.7.8"
   }
 }
