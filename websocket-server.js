@@ -2,7 +2,9 @@
  * { WEBSOCKET SERVER }
  *
  */
-var server = require('http').createServer().listen(9999)
+var ecstatic = require('ecstatic')
+  , server = require('http').createServer(
+      ecstatic({ root: __dirname + '/static' })).listen(9999)
   , fs = require('fs')
   , WebSocketServer = require('ws').Server
   , wss = new WebSocketServer({server: server})
@@ -10,6 +12,8 @@ var server = require('http').createServer().listen(9999)
   , MuxDemux = require('mux-demux')
   , emitStream = require('emit-stream')
   , EventEmitter = require('events').EventEmitter
+  , split = require('split')
+  , SlowStream = require("slow-stream")
 
 
 wss.on('connection', function(ws) {
@@ -36,8 +40,12 @@ function router (stream) {
 
     case "client-emitter":
     var evclient = emitStream(stream)
+    var splitter = split()
+      , throttle = new SlowStream({ maxWriteInterval: 200 })
     evclient.on('bitcoin-data', function () {
       fs.createReadStream('bitcoin.csv', {encoding:'utf8'})
+      .pipe(splitter)
+      .pipe(throttle)
       .pipe(self.createWriteStream('file'))
     })
   }

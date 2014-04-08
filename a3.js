@@ -13,20 +13,20 @@ ws.pipe(mx).pipe(ws)
 
 var serverEmitter = emitStream(mx.createReadStream('server-emitter'))
 serverEmitter.on('message', function (msg) {
-    console.log(msg)
+    document.querySelector('.server-comments').innerHTML = msg
 })
 
 var ev = new EventEmitter()
 emitStream(ev).pipe(mx.createWriteStream('client-emitter'))
 setTimeout( function () {
     ev.emit('bitcoin-data')
-}, 2000)
-
+}, 5000)
 
 function router (stream) {
     if (stream.meta === 'file') {
-        stream.on('data', function (data) {
-            console.log(data)
+        var container = document.querySelector('.file-container')
+        stream.on('data', function (line) {
+            container.innerHTML += line + "<br>"
         })
     }
 }

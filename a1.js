@@ -8,6 +8,8 @@
  reading or writing files, or communicating over network sockets.
  They can be composed into pipelines.
 
+
+
  "We should have some ways of connecting programs like a garden hose---
  screw in another segment when it becomes necessary to massage data
  in another way. This is the way of IO also."
@@ -43,25 +45,25 @@
  *
  *
  - print a file to stdout, pipe it to 'head' which just takes the first line
- * >> slowcat -d 500 bitcoin.csv
+ * >> slowcat  bitcoin.csv | wc -l
  *
  *
  *
- - stream a text file (slowly) pipe it to a text to JSON renderer then pipe
+ - stream a text file (slowly) pipe it to a text to JSON converter then pipe
  - it to this nodejs script.
  * >> slowcat -d 100 bitcoin.csv | t2j -f ',' '{"x":0, "y":7}' | node {this}
  */
 var conf = require('./config.json')
 var plotly = require('plotly')(conf.user, conf.apikey)
-var Through = require('through2')
-var meanStream = Through(movingAvg(50))
-var stream = plotly.stream(conf.token1)
+var through = require('through2')
+var meanStream = through(movingAvg(5))
 
-process.stdin.pipe(meanStream).pipe(stream)
+var plotlyStream = plotly.stream(conf.token1)
+process.stdin.pipe(meanStream).pipe(plotlyStream)
 
 function movingAvg (win) {
 
-  if (!win) win = 10
+  if (!win) win = 5
 
   var window = []
 
